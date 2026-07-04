@@ -1,0 +1,32 @@
+:host ::ng-deep {
+    .sidebar-button {
+        .p-button {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            }
+            
+            &:active {
+                transform: translateY(0);
+            }
+        }
+
+        &.active-route {
+            .p-button {
+                background-color: #f0fdf4;
+                border-color: #22c55e;
+                color: #22c55e;
+                box-shadow: 0 4px 6px -1px rgb(34 197 94 / 0.1);
+
+                &:hover {
+                    background-color: #f0fdf4;
+                    border-color: #22c55e;
+                    color: #22c55e;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,25 @@
+<div class="container">
+    <div class="right-box">
+        <textarea [(ngModel)]="textContent" rows="3"
+            placeholder="Leave it blank to generate random memes..."></textarea>
+        <button (click)="generateMemes()" [disabled]="isLoading()">
+            {{ isLoading() ? 'Loading...' : 'Generate Memes' }}
+        </button>
+        @if (memes().length > 0) {
+            <button (click)="downloadAllMemes()" [disabled]="isDownloading()">
+                {{ isDownloading() ? 'Downloading...' : 'Download All Memes' }}
+            </button>
+            <p>Do give permission to download multiple files :)</p>
+        }
+    </div>
+
+    <div class="left-box">
+        @if(memes().length > 0) {
+        <div class="meme-container">
+            @for (meme of memes(); track meme.caption) {
+            <app-meme [meme]="meme"></app-meme>
+            }
+        </div>
+        }
+    </div>
+</div>

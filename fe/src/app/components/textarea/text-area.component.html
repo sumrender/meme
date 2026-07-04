@@ -1,0 +1,50 @@
+<div class="tw-container tw-mx-auto tw-px-4">
+  <div class="content-container tw-mt-10">
+    <div
+      class="tw-flex tw-flex-col md:tw-flex-row tw-p-4 md:tw-pl-32 tw-relative"
+    >
+      <div
+        class="right tw-flex tw-flex-col tw-justify-start tw-w-full md:tw-w-2/3"
+      >
+        <h1 class="gradient-text tw-text-3xl md:tw-text-4xl tw-mb-6">
+          Gimme content for memes
+        </h1>
+        <textarea
+          class="tw-mb-4"
+          rows="5"
+          placeholder="Enter anything from short prompts, emails to large blog posts..."
+          pTextarea
+          [(ngModel)]="text"
+          (keydown.enter)="$event.preventDefault(); emitText()"
+        ></textarea>
+        <div class="tw-flex tw-gap-3 tw-flex-wrap">
+          <p-button
+            (onClick)="emitText()"
+            [disabled]="text.trim().length === 0"
+            [loading]="loading"
+            label="Generate"
+            icon="pi pi-microchip-ai"
+            iconPos="right"
+          ></p-button>
+          <p-button
+            (onClick)="clearText()"
+            [disabled]="text.trim().length === 0"
+            label="Clear"
+            icon="pi pi-eraser"
+            severity="danger"
+            iconPos="right"
+          ></p-button>
+        </div>
+      </div>
+      <div
+        class="left tw-absolute tw-right-4 tw-bottom-0 tw-w-1/3 md:tw-max-w-[300px]"
+      >
+        <img
+          src="gimme.png"
+          alt="Ape asking for memes"
+          class="tw-w-full tw-h-auto"
+        />
+      </div>
+    </div>
+  </div>
+</div>

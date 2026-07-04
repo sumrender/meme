@@ -1,0 +1,52 @@
+.auth-container {
+  @apply tw-min-h-screen tw-flex tw-items-center tw-justify-center;
+}
+
+.auth-card {
+  @apply tw-bg-white tw-rounded-2xl tw-shadow-xl tw-w-full tw-max-w-md tw-mx-4;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.auth-content {
+  @apply tw-p-8 tw-text-center;
+}
+
+.auth-title {
+  @apply tw-text-2xl md:tw-text-3xl tw-font-bold tw-text-gray-800 tw-mb-2;
+  background: linear-gradient(to right, #10b981, #14b8a6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.auth-subtitle {
+  @apply tw-text-gray-600 tw-mb-8;
+}
+
+.auth-divider {
+  @apply tw-relative tw-text-center tw-my-8;
+  
+  &::before {
+    content: '';
+    @apply tw-absolute tw-left-0 tw-top-1/2 tw-w-full tw-h-px tw-bg-gray-200;
+  }
+  
+  span {
+    @apply tw-relative tw-bg-white tw-px-4 tw-text-sm tw-text-gray-500;
+  }
+}
+
+.auth-footer {
+  @apply tw-mt-8 tw-text-xs tw-text-gray-500;
+}
+
+// Add some animation
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-card {
+  animation: fadeIn 0.6s ease-out;
+}

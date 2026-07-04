@@ -1,0 +1,51 @@
+button {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #3e8e41;
+    transform: scale(0.95);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #4caf50;
+}
+
+.meme-container {
+  @apply tw-flex tw-justify-center tw-p-6;
+}
+
+.meme-wrapper {
+  @apply tw-relative tw-rounded-xl tw-overflow-hidden tw-shadow-lg tw-transition-transform hover:tw-scale-[1.02];
+
+  canvas {
+    @apply tw-block tw-max-w-full tw-h-auto;
+  }
+
+  .overlay {
+    @apply tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center;
+    @apply tw-opacity-0 tw-transition-opacity tw-duration-200;
+    @apply tw-bg-black/30 hover:tw-opacity-100;
+  }
+
+  .download-button {
+    ::ng-deep .p-button {
+      @apply tw-bg-white/90 hover:tw-bg-white tw-text-gray-800;
+      @apply tw-shadow-lg tw-transition-transform hover:tw-scale-110;
+    }
+  }
+}

@@ -1,0 +1,16 @@
+<div class="meme-container">
+  <div class="meme-wrapper">
+    <canvas #canvas></canvas>
+    <div class="overlay">
+      <p-button
+        (click)="downloadMeme()"
+        icon="pi pi-download"
+        severity="primary"
+        [text]="true"
+        [rounded]="true"
+        class="download-button"
+      >
+      </p-button>
+    </div>
+  </div>
+</div>
