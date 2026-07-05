@@ -21,7 +21,7 @@ export class ApiService {
    * Returns the image as a Blob.
    */
   generateRandomMemes() {
-    return this.http.get<Meme[]>(`${this.baseUrl}/random-memes`);
+    return this.http.get<Meme[]>(`${this.baseUrl}/generate-random-memes`);
   }
 
   /**

@@ -3,9 +3,9 @@ import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
-import { GoogleUser } from '../../models/user.model';
+import { UserProfile } from '../../models/user.model';
 import { MenuItem } from 'primeng/api';
-import { Router, RouterModule } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -15,9 +15,10 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class SidebarComponent implements OnInit {
   menuItems = signal<MenuItem[]>([]);
-  constructor(private authService: AuthService, private router: Router) {}
 
-  get user(): GoogleUser | null {
+  constructor(private authService: AuthService) {}
+
+  get user(): UserProfile | null {
     return this.authService.user();
   }
 
@@ -26,24 +27,18 @@ export class SidebarComponent implements OnInit {
       {
         label: 'Sign Out',
         command: () => {
-          this.signout();
+          this.authService.logout();
         },
         icon: 'pi pi-sign-out',
       },
       {
         label: 'Settings',
         command: () => {
-          // TODO: create settings page
           alert('settings');
         },
         icon: 'pi pi-cog',
       },
     ]);
-  }
-
-  signout(): void {
-    this.authService.logout();
-    this.router.navigate(['auth']);
   }
 
   ngOnInit(): void {

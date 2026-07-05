@@ -14,11 +14,14 @@ namespace Backend.Data.Configurations
 
             builder.Property(u => u.Id).HasColumnName("id");
             builder.Property(u => u.Email).HasColumnName("email").IsRequired().HasMaxLength(255);
+            builder.Property(u => u.GoogleId).HasColumnName("google_id").IsRequired().HasMaxLength(255);
+            builder.Property(u => u.Name).HasColumnName("name").HasMaxLength(255);
+            builder.Property(u => u.PictureUrl).HasColumnName("picture_url").HasMaxLength(1024);
             builder.Property(u => u.CreatedAt).HasColumnName("created_at").IsRequired();
             builder.Property(u => u.UpdatedAt).HasColumnName("updated_at").IsRequired();
-            builder.Property(u => u.Credits).HasColumnName("credits").IsRequired().HasDefaultValue(5);
 
             builder.HasIndex(u => u.Email).IsUnique();
+            builder.HasIndex(u => u.GoogleId).IsUnique();
         }
     }
 }

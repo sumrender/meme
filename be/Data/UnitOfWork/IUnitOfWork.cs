@@ -6,6 +6,7 @@ namespace Backend.Data.UnitOfWork
     {
         IUserRepository Users { get; }
         IMemeTemplateRepository MemeTemplates { get; }
+        IRefreshTokenRepository RefreshTokens { get; }
         Task<int> SaveChangesAsync();
     }
 }

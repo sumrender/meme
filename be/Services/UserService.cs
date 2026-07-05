@@ -22,38 +22,32 @@ namespace Backend.Services
             return await _unitOfWork.Users.GetByEmailAsync(email);
         }
 
-        public async Task<User> CreateUser(string email)
+        public async Task<User> UpsertGoogleUser(string googleId, string email, string? name, string? pictureUrl)
         {
-            var user = await GetUserByEmail(email);
+            var user = await _unitOfWork.Users.GetByGoogleIdAsync(googleId);
+
             if (user != null)
             {
+                user.Email = email;
+                user.Name = name;
+                user.PictureUrl = pictureUrl;
+                user.UpdatedAt = DateTime.UtcNow;
+                _unitOfWork.Users.Update(user);
+                await _unitOfWork.SaveChangesAsync();
                 return user;
             }
 
             user = new User
             {
+                GoogleId = googleId,
                 Email = email,
+                Name = name,
+                PictureUrl = pictureUrl,
                 CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow,
-                Credits = 5
+                UpdatedAt = DateTime.UtcNow
             };
 
             await _unitOfWork.Users.AddAsync(user);
-            await _unitOfWork.SaveChangesAsync();
-            return user;
-        }
-
-        public async Task<User> UpdateUserCredits(string email, int newCredits)
-        {
-            var user = await GetUserByEmail(email);
-            if (user == null)
-            {
-                throw new Exception("User not found");
-            }
-
-            user.Credits = newCredits;
-            user.UpdatedAt = DateTime.UtcNow;
-            _unitOfWork.Users.Update(user);
             await _unitOfWork.SaveChangesAsync();
             return user;
         }

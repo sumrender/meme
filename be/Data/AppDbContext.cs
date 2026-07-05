@@ -7,6 +7,7 @@ namespace Backend.Data
     {
         public DbSet<User> Users => Set<User>();
         public DbSet<MemeTemplate> MemeTemplates => Set<MemeTemplate>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

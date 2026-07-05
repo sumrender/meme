@@ -11,5 +11,10 @@ namespace Backend.Data.Repositories
         {
             return await _dbSet.FirstOrDefaultAsync(u => u.Email == email);
         }
+
+        public async Task<User?> GetByGoogleIdAsync(string googleId)
+        {
+            return await _dbSet.FirstOrDefaultAsync(u => u.GoogleId == googleId);
+        }
     }
 }

@@ -1,16 +1,6 @@
-export interface GoogleUser {
-  iss: string;
-  azp: string;
-  aud: string;
-  sub: string; // unique user id
+export interface UserProfile {
+  id: number;
   email: string;
-  email_verified: boolean;
-  nbf?: number;
-  name: string;
-  picture: string;
-  given_name: string;
-  family_name: string;
-  iat: number;
-  exp: number;
-  jti?: string;
+  name?: string;
+  pictureUrl?: string;
 }

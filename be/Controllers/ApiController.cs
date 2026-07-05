@@ -1,4 +1,5 @@
 using Backend.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Mime;
@@ -12,32 +13,14 @@ namespace Backend.Controllers
     public class ApiController : ControllerBase
     {
         private readonly IMemeService _memeService;
-        private readonly IUserService _userService;
 
-        public ApiController(IMemeService memeService, IUserService userService)
+        public ApiController(IMemeService memeService)
         {
             _memeService = memeService;
-            _userService = userService;
-        }
-
-        [HttpPost("auth")]
-        public async Task<IActionResult> Auth([FromBody] AuthRequestDto request)
-        {
-            if (request == null || string.IsNullOrWhiteSpace(request.Email))
-            {
-                return BadRequest(new { Message = "Email cannot be empty." });
-            }
-            var user = await _userService.CreateUser(request.Email);
-            var response = new UserResponseDto
-            {
-                Id = user.Id,
-                Email = user.Email,
-                Credits = user.Credits
-            };
-            return Ok(response);
         }
 
         [HttpPost("/generate-memes")]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Generate memes from text content",
             Description = "Creates a list of meme images based on the provided text content.",
@@ -68,6 +51,7 @@ namespace Backend.Controllers
         }
 
         [HttpPost("/generate-random-memes")]
+        [Authorize]
         [SwaggerOperation(
             Summary = "Generate random memes",
             OperationId = "GenerateRandomMemes",

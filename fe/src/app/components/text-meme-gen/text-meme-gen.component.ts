@@ -23,16 +23,17 @@ export class TextMemeGenComponent {
     this.isLoading.set(true);
     this.memes.set([]);
     const memeFunction = this.textContent() ? this.apiService.generateMemes(this.textContent()) : this.apiService.generateRandomMemes();
-    memeFunction.subscribe(
-      (memes) => {
+    memeFunction.subscribe({
+      next: (memes) => {
         this.memes.set(memes);
         this.isLoading.set(false);
       },
-      (error) => {
+      error: (error) => {
         console.error('Error generating memes:', error);
         alert("Please try again after some time 😁")
         this.isLoading.set(false);
       }
+    }
     );
   }
 

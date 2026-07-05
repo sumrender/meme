@@ -33,6 +33,7 @@ namespace Backend.Services
         {
             if (_cache.TryGetValue("meme_templates", out IEnumerable<MemeTemplate>? cached) && cached != null)
             {
+                SetMemeNameToImageDict(cached);
                 return cached;
             }
 

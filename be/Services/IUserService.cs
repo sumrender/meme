@@ -6,7 +6,6 @@ namespace Backend.Services
     {
         Task<User?> GetUserById(int id);
         Task<User?> GetUserByEmail(string email);
-        Task<User> CreateUser(string email);
-        Task<User> UpdateUserCredits(string email, int newCredits);
+        Task<User> UpsertGoogleUser(string googleId, string email, string? name, string? pictureUrl);
     }
 }

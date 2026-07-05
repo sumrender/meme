@@ -7,6 +7,7 @@ namespace Backend.Data.UnitOfWork
         private readonly AppDbContext _context;
         private IUserRepository? _users;
         private IMemeTemplateRepository? _memeTemplates;
+        private IRefreshTokenRepository? _refreshTokens;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -18,6 +19,9 @@ namespace Backend.Data.UnitOfWork
 
         public IMemeTemplateRepository MemeTemplates =>
             _memeTemplates ??= new MemeTemplateRepository(_context);
+
+        public IRefreshTokenRepository RefreshTokens =>
+            _refreshTokens ??= new RefreshTokenRepository(_context);
 
         public async Task<int> SaveChangesAsync()
         {
