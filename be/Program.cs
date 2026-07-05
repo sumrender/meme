@@ -88,6 +88,7 @@ namespace Backend
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IMemeService, MemeService>();
             builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ICreditService, CreditService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();

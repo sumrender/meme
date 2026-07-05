@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { TextAreaComponent } from '../textarea/text-area.component';
 import { Meme } from '../../models/meme.model';
 import { ApiService } from '../../services/api.service';
+import { CreditService } from '../../services/credit.service';
 import { MemeComponent } from '../meme/meme.component';
 
 
@@ -15,14 +16,16 @@ export class DashboardComponent {
   isLoading = signal(false);
   memes = signal<Meme[]>([]);
 
-  constructor(private apiService: ApiService) {}
+  private apiService = inject(ApiService);
+  creditService = inject(CreditService);
 
   generateMemes(text: string) {
     this.isLoading.set(true);
     this.memes.set([]);
     this.apiService.generateMemes(text).subscribe({
-      next: (memes) => {
-        this.memes.set(memes);
+      next: (response) => {
+        this.memes.set(response.memes);
+        this.creditService.updateCredits(response.remainingCredits);
       },
       error: (error) => {
         console.error('Error generating memes:', error);

@@ -1,5 +1,6 @@
 <app-text-area
   [loading]="isLoading()"
+  [credits]="creditService.credits()"
   (onClick)="generateMemes($event)"
 ></app-text-area>
 

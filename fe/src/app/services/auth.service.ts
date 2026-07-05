@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { UserProfile } from '../models/user.model';
 import { BASE_URL } from '../models/constants';
+import { CreditService } from './credit.service';
 
 interface AuthResponse {
   accessToken: string;
@@ -17,7 +18,11 @@ export class AuthService {
   user = signal<UserProfile | null>(null);
   isAuthenticated = computed(() => !!this.accessTokenSignal());
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private creditService: CreditService
+  ) {}
 
   async restoreSession(): Promise<void> {
     try {
@@ -28,6 +33,7 @@ export class AuthService {
       if (response) {
         this.accessTokenSignal.set(response.accessToken);
         this.user.set(response.user);
+        this.creditService.fetchCredits().subscribe();
       }
     } catch {
       // Silent fail - app boots in unauthenticated state
@@ -64,6 +70,7 @@ export class AuthService {
 
     this.accessTokenSignal.set(response.accessToken);
     this.user.set(response.user);
+    this.creditService.fetchCredits().subscribe();
   }
 
   async refreshToken(): Promise<string> {

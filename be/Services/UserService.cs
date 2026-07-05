@@ -6,10 +6,12 @@ namespace Backend.Services
     public class UserService : IUserService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ICreditService _creditService;
 
-        public UserService(IUnitOfWork unitOfWork)
+        public UserService(IUnitOfWork unitOfWork, ICreditService creditService)
         {
             _unitOfWork = unitOfWork;
+            _creditService = creditService;
         }
 
         public async Task<User?> GetUserById(int id)
@@ -49,6 +51,7 @@ namespace Backend.Services
 
             await _unitOfWork.Users.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();
+            await _creditService.GrantInitialCreditsAsync(user.Id);
             return user;
         }
     }

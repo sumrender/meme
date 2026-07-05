@@ -10,6 +10,8 @@ namespace Backend.Data
         public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
         public DbSet<Album> Albums => Set<Album>();
         public DbSet<Meme> Memes => Set<Meme>();
+        public DbSet<UserCredit> UserCredits => Set<UserCredit>();
+        public DbSet<CreditTransaction> CreditTransactions => Set<CreditTransaction>();
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 

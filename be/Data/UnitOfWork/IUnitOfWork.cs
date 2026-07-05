@@ -1,4 +1,5 @@
 using Backend.Data.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Backend.Data.UnitOfWork
 {
@@ -9,6 +10,9 @@ namespace Backend.Data.UnitOfWork
         IRefreshTokenRepository RefreshTokens { get; }
         IAlbumRepository Albums { get; }
         IMemeRepository Memes { get; }
+        ICreditRepository Credits { get; }
+        ICreditTransactionRepository CreditTransactions { get; }
         Task<int> SaveChangesAsync();
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

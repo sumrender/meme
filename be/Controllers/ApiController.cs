@@ -14,10 +14,12 @@ namespace Backend.Controllers
     public class ApiController : ControllerBase
     {
         private readonly IMemeService _memeService;
+        private readonly ICreditService _creditService;
 
-        public ApiController(IMemeService memeService)
+        public ApiController(IMemeService memeService, ICreditService creditService)
         {
             _memeService = memeService;
+            _creditService = creditService;
         }
 
         [HttpPost("/generate-memes")]
@@ -43,8 +45,23 @@ namespace Backend.Controllers
             try
             {
                 var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
-                var memes = await _memeService.GenerateMemesForContent(request.TextContent, userId);
-                return Ok(memes);
+
+                var (success, remainingCredits) = await _creditService.TryDeductCreditAsync(userId);
+                if (!success)
+                {
+                    return StatusCode(402, new { Message = "Insufficient credits.", RemainingCredits = 0 });
+                }
+
+                try
+                {
+                    var memes = await _memeService.GenerateMemesForContent(request.TextContent, userId);
+                    return Ok(new GenerateMemesResponseDto { Memes = memes, RemainingCredits = remainingCredits });
+                }
+                catch (Exception)
+                {
+                    await _creditService.RefundCreditAsync(userId);
+                    throw;
+                }
             }
             catch (Exception ex)
             {

@@ -12,5 +12,7 @@ namespace Backend.Models
 
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public ICollection<Album> Albums { get; set; } = new List<Album>();
+        public ICollection<UserCredit> Credits { get; set; } = new List<UserCredit>();
+        public ICollection<CreditTransaction> CreditTransactions { get; set; } = new List<CreditTransaction>();
     }
 }

@@ -1,4 +1,5 @@
 using Backend.Data.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Backend.Data.UnitOfWork
 {
@@ -10,6 +11,8 @@ namespace Backend.Data.UnitOfWork
         private IRefreshTokenRepository? _refreshTokens;
         private IAlbumRepository? _albums;
         private IMemeRepository? _memes;
+        private ICreditRepository? _credits;
+        private ICreditTransactionRepository? _creditTransactions;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -31,9 +34,20 @@ namespace Backend.Data.UnitOfWork
         public IMemeRepository Memes =>
             _memes ??= new MemeRepository(_context);
 
+        public ICreditRepository Credits =>
+            _credits ??= new CreditRepository(_context);
+
+        public ICreditTransactionRepository CreditTransactions =>
+            _creditTransactions ??= new CreditTransactionRepository(_context);
+
         public async Task<int> SaveChangesAsync()
         {
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
 
         public void Dispose()

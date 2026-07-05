@@ -17,11 +17,14 @@
           [(ngModel)]="text"
           (keydown.enter)="$event.preventDefault(); emitText()"
         ></textarea>
-        <div class="tw-flex tw-gap-3 tw-flex-wrap">
+        <div class="tw-flex tw-gap-3 tw-flex-wrap tw-items-center">
           <p-button
             (onClick)="emitText()"
-            [disabled]="text.trim().length === 0"
+            [disabled]="isGenerateDisabled"
             [loading]="loading"
+            [pTooltip]="credits !== null && credits <= 0 ? 'No credits remaining' : ''"
+            [tooltipDisabled]="credits === null || credits > 0"
+            tooltipPosition="top"
             label="Generate"
             icon="pi pi-microchip-ai"
             iconPos="right"
@@ -34,6 +37,11 @@
             severity="danger"
             iconPos="right"
           ></p-button>
+          @if (credits !== null) {
+          <span class="tw-text-sm tw-text-gray-500 tw-flex tw-items-center tw-gap-1 tw-ml-2">
+            <i class="pi pi-bolt"></i> {{ credits }} credits
+          </span>
+          }
         </div>
       </div>
       <div

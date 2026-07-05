@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable, isDevMode } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Meme } from '../models/meme.model';
+import { GenerateMemesResponse } from '../models/credit.model';
 import { AlbumSummary, AlbumDetail } from '../models/album.model';
 import { BASE_URL } from '../models/constants';
 
@@ -10,19 +11,14 @@ import { BASE_URL } from '../models/constants';
 export class ApiService {
   private baseUrl = BASE_URL;
 
-  constructor(private http: HttpClient) {
-    // if (isDevMode()) {
-    //   this.baseUrl = 'http://localhost:8080';
-    //   console.log('using localhost api');
-    // }
-  }
+  constructor(private http: HttpClient) { }
 
   generateRandomMemes() {
     return this.http.get<Meme[]>(`${this.baseUrl}/generate-random-memes`);
   }
 
   generateMemes(textContent: string) {
-    return this.http.post<Meme[]>(`${this.baseUrl}/generate-memes`, {
+    return this.http.post<GenerateMemesResponse>(`${this.baseUrl}/generate-memes`, {
       textContent,
     });
   }

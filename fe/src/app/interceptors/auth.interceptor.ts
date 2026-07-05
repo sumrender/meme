@@ -1,6 +1,7 @@
 import { HttpInterceptorFn, HttpRequest, HttpHandlerFn, HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../services/auth.service';
+import { CreditService } from '../services/credit.service';
 import { BASE_URL } from '../models/constants';
 import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
 
@@ -27,6 +28,10 @@ export const authInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, ne
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && token) {
         return handle401AndRetry(req, next, authService);
+      }
+      if (error.status === 402) {
+        const creditService = inject(CreditService);
+        creditService.updateCredits(0);
       }
       return throwError(() => error);
     })

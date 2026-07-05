@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { AvatarModule } from 'primeng/avatar';
 import { MenuModule } from 'primeng/menu';
 import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
+import { CreditService } from '../../services/credit.service';
 import { UserProfile } from '../../models/user.model';
 import { MenuItem } from 'primeng/api';
 import { RouterModule } from '@angular/router';
@@ -15,6 +16,7 @@ import { RouterModule } from '@angular/router';
 })
 export class SidebarComponent implements OnInit {
   menuItems = signal<MenuItem[]>([]);
+  creditService = inject(CreditService);
 
   constructor(private authService: AuthService) {}
 
