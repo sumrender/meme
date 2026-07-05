@@ -1,6 +1,6 @@
 # AI Meme Generator
 
-An AI-powered meme generation platform built with an **ASP.NET Core 8 Web API** backend and an **Angular 19** frontend. The system takes arbitrary text inputs (such as diary entries, codebase logs, or paragraphs), identifies key themes using **Google Gemini 1.5 Flash**, selects relevant meme templates from a **PostgreSQL** database, generates funny captions, and overlays them using both server-side processing (**SkiaSharp**) and client-side web rendering (**HTML5 Canvas**).
+An AI-powered meme generation platform built with an **ASP.NET Core 8 Web API** backend and an **Angular 19** frontend. The system takes arbitrary text inputs (such as diary entries, codebase logs, or paragraphs), identifies key themes using a **Cloudflare AI LLM (e.g. Llama 3.1)**, selects relevant meme templates from a **PostgreSQL** database, generates funny captions, and overlays them using both server-side processing (**SkiaSharp**) and client-side web rendering (**HTML5 Canvas**).
 
 ---
 
@@ -9,8 +9,9 @@ An AI-powered meme generation platform built with an **ASP.NET Core 8 Web API** 
 - **Text-to-Meme Intelligence:** Submit any text snippet (articles, complaints, logs) to automatically generate high-context, context-appropriate memes.
 - **Dynamic Image Processing:** Overlay text dynamically with custom font rendering, line-wrapping, and semi-transparent caption bars.
 - **Google Sign-In Integration:** Securely authenticate users via Google Identity Services.
-- **Credit System:** Built-in credit-based limits for authenticated users (defaulting to 5 starting credits).
-- **Interactive Dashboard:** Input area with loading indicators, a grid view of generated memes, and a bulk-download option.
+- **Meme Albums & History:** Automatically saves generated memes under distinct albums. Users can view their generation history, inspect past albums, and retrieve saved memes.
+- **Advanced Credit Ledger:** Multi-tiered credit system tracking user credits and transactions via a ledger to prevent double-spending and record a history of balance changes.
+- **Interactive Dashboard:** Input area with loading indicators, a grid view of generated memes, and options to download.
 - **Swagger Documentation:** Auto-generated interactive API documentation for testing backend endpoints.
 
 ---
@@ -22,7 +23,7 @@ An AI-powered meme generation platform built with an **ASP.NET Core 8 Web API** 
 - **Database Access:** Entity Framework Core 8 + Npgsql Provider (Code-First Migrations)
 - **Image Processing:** SkiaSharp (for native image manipulations)
 - **CDN / Storage:** Cloudinary SDK (for hosting and serving template images)
-- **AI Engine:** Google Gemini AI API (Gemini 1.5 Flash)
+- **AI Engine:** Cloudflare AI API (defaulting to `@cf/meta/llama-3.1-8b-instruct`)
 
 ### Frontend
 - **Framework:** Angular 19 (Standalone Components, Signals, Router)
@@ -37,15 +38,15 @@ An AI-powered meme generation platform built with an **ASP.NET Core 8 Web API** 
 
 ## Directory Structure
 
-- [be/](file:///Users/sumrendersingh/Desktop/meme/be) — ASP.NET Core 8 Web API application
-  - [Controllers/](file:///Users/sumrendersingh/Desktop/meme/be/Controllers) — Endpoint routing and request validation
-  - [Services/](file:///Users/sumrendersingh/Desktop/meme/be/Services) — Business logic handlers (Meme, Gemini, Image, User)
-  - [Models/](file:///Users/sumrendersingh/Desktop/meme/be/Models) — Database entities (User, MemeTemplate)
-  - [Dtos/](file:///Users/sumrendersingh/Desktop/meme/be/Dtos) — Data Transfer Objects for API contracts
-  - [Data/](file:///Users/sumrendersingh/Desktop/meme/be/Data) — EF Core DbContext, Configurations, Repositories, Unit of Work, Seed Data
-- [fe/](file:///Users/sumrendersingh/Desktop/meme/fe) — Angular 19 frontend Single Page Application (SPA)
-  - [src/app/components/](file:///Users/sumrendersingh/Desktop/meme/fe/src/app/components) — Dashboard, Meme, Sidebar, Textarea, and Auth views
-  - [src/app/services/](file:///Users/sumrendersingh/Desktop/meme/fe/src/app/services) — HTTP client integrations (Google Auth & Meme generation APIs)
+- [be/](file:///be) — ASP.NET Core 8 Web API application
+  - [Controllers/](file:///be/Controllers) — Endpoint routing and request validation (ApiController, AlbumsController, CreditsController)
+  - [Services/](file:///be/Services) — Business logic handlers (Meme, CloudflareAiService, Image, User, Credit)
+  - [Models/](file:///be/Models) — Database entities (User, MemeTemplate, Album, Meme, UserCredit, CreditTransaction)
+  - [Dtos/](file:///be/Dtos) — Data Transfer Objects for API contracts
+  - [Data/](file:///be/Data) — EF Core DbContext, Configurations, Repositories, Unit of Work, Seed Data
+- [fe/](file:///fe) — Angular 19 frontend Single Page Application (SPA)
+  - [src/app/components/](file:///fe/src/app/components) — Dashboard, Meme, Sidebar, Textarea, Auth, My Memes, and Album Detail views
+  - [src/app/services/](file:///fe/src/app/services) — HTTP client integrations (Google Auth, Meme generation, and Credit APIs)
 
 ---
 
@@ -66,14 +67,7 @@ dotnet tool install --global dotnet-ef
 dotnet ef database update
 ```
 
-This creates the `users` and `meme_templates` tables with all 11 default meme templates pre-seeded.
-
-> **Note:** If you have an existing database with the old Dapper schema, drop it first:
-> ```sql
-> DROP TABLE IF EXISTS meme_templates;
-> DROP TABLE IF EXISTS users;
-> DROP TABLE IF EXISTS __EFMigrationsHistory;
-> ```
+This creates all required tables (`users`, `meme_templates`, `albums`, `memes`, `user_credits`, `credit_transactions`) with default meme templates pre-seeded.
 
 ---
 
@@ -103,27 +97,34 @@ This launches a PostgreSQL container exposed on `localhost:5432` with username `
 dotnet ef database update
 ```
 
-### 2. Configure Backend Secrets
-Create or update [appsettings.Development.json](file:///Users/sumrendersingh/Desktop/meme/be/appsettings.Development.json) inside the `be` directory:
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=meme_gen_db;Port=5432;Username=postgres;Password=postgres"
-  },
-  "GEMINI_API_KEY": "YOUR_GEMINI_API_KEY",
-  "CLOUDINARY_CLOUD_NAME": "dplzxrvqy",
-  "CLOUDINARY_API_KEY": "315875178361159",
-  "CLOUDINARY_API_SECRET": "YOUR_CLOUDINARY_API_SECRET"
-}
+### 3. Configure Backend Environment
+Create a `.env` file in the `be/` directory (you can copy `.env.example` as a starting point) and configure the environment variables:
+```env
+# Cloudflare AI
+CloudflareSettings__ApiToken=YOUR_CLOUDFLARE_API_TOKEN
+CloudflareSettings__BaseUrl=https://gateway.ai.cloudflare.com/v1/YOUR_ACCOUNT_ID/default/compat
+CloudflareSettings__Model=@cf/meta/llama-3.1-8b-instruct
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=YOUR_CLOUDINARY_CLOUD_NAME
+CLOUDINARY_API_KEY=YOUR_CLOUDINARY_API_KEY
+CLOUDINARY_API_SECRET=YOUR_CLOUDINARY_API_SECRET
+
+# Database
+ConnectionStrings__DefaultConnection=Server=localhost;Database=meme_gen_db;Port=5432;User Id=postgres;Password=postgres
+
+# JWT Auth
+JWT_SECRET=YOUR_JWT_SECRET
+JWT_ISSUER=meme-api
+JWT_AUDIENCE=meme-app
+
+# Google Auth
+GOOGLE_CLIENT_ID=YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com
 ```
 
-### 3. Run Backend API
+Alternatively, you can configure these settings inside `appsettings.Development.json` using the standard nested JSON structure.
+
+### 4. Run Backend API
 ```bash
 # Verify you are in the be directory
 cd be
@@ -134,9 +135,9 @@ dotnet run
 The server will start and listen on `http://localhost:8080`.
 - **Swagger Documentation UI:** Open `http://localhost:8080/swagger` in your browser to view and interact with the endpoints.
 
-### 4. Configure Frontend Environment
+### 5. Configure Frontend Environment
 Ensure the frontend is pointing to the local API endpoint.
-Modify [constants.ts](file:///Users/sumrendersingh/Desktop/meme/fe/src/app/models/constants.ts):
+Modify [constants.ts](file:///fe/src/app/models/constants.ts):
 ```typescript
 export const MEME_USER = 'MEME_USER';
 
@@ -144,7 +145,7 @@ export const MEME_USER = 'MEME_USER';
 export const BASE_URL = 'http://localhost:8080';
 ```
 
-### 5. Install Dependencies & Run Frontend
+### 6. Install Dependencies & Run Frontend
 ```bash
 # Navigate to the frontend directory
 cd ../fe
@@ -165,8 +166,10 @@ The following environment variables and settings are used by the system:
 
 | Config Key | Location / Usage | Purpose |
 |------------|------------------|---------|
-| `ConnectionStrings:DefaultConnection` | `appsettings.json` | PostgreSQL DB connection parameters |
-| `GEMINI_API_KEY` | `appsettings.json` | Credentials to authenticate with Google Gemini API |
-| `CLOUDINARY_API_SECRET` | `appsettings.json` | Secret key to upload generated assets to Cloudinary |
+| `ConnectionStrings:DefaultConnection` | `appsettings.json` / `.env` | PostgreSQL DB connection parameters |
+| `CloudflareSettings:ApiToken` | `appsettings.json` / `.env` | Credentials to authenticate with Cloudflare AI API |
+| `CloudflareSettings:BaseUrl` | `appsettings.json` / `.env` | Target URL prefix for Cloudflare AI API gateway |
+| `CloudflareSettings:Model` | `appsettings.json` / `.env` | The specific LLM to target on Cloudflare (e.g. Llama-3.1) |
+| `CLOUDINARY_API_SECRET` | `appsettings.json` / `.env` | Secret key to upload generated assets to Cloudinary |
 | `BASE_URL` | `constants.ts` | Frontend base endpoint URL for backend API queries |
 | `client_id` | `auth.service.ts` | Google Client ID credential for Google Sign-In prompt |
