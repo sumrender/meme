@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, isDevMode } from '@angular/core';
 import { Meme } from '../models/meme.model';
+import { AlbumSummary, AlbumDetail } from '../models/album.model';
 import { BASE_URL } from '../models/constants';
 
 @Injectable({
@@ -16,22 +17,21 @@ export class ApiService {
     // }
   }
 
-  /**
-   * Fetches a random meme image.
-   * Returns the image as a Blob.
-   */
   generateRandomMemes() {
     return this.http.get<Meme[]>(`${this.baseUrl}/generate-random-memes`);
   }
 
-  /**
-   * Generates memes based on provided text content.
-   * @param textContent - The text content for meme generation.
-   * @returns An observable of GenerateMemesResponse.
-   */
   generateMemes(textContent: string) {
     return this.http.post<Meme[]>(`${this.baseUrl}/generate-memes`, {
       textContent,
     });
+  }
+
+  getAlbums() {
+    return this.http.get<AlbumSummary[]>(`${this.baseUrl}/api/albums`);
+  }
+
+  getAlbum(id: number) {
+    return this.http.get<AlbumDetail>(`${this.baseUrl}/api/albums/${id}`);
   }
 }

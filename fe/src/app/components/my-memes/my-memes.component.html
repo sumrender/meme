@@ -1,0 +1,53 @@
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-6">
+  <h1 class="tw-text-2xl tw-font-bold tw-mb-6">My Memes</h1>
+
+  @if (isLoading()) {
+    <div class="tw-flex tw-justify-center tw-py-12">
+      <p-progressSpinner />
+    </div>
+  } @else if (albums().length === 0) {
+    <div class="tw-text-center tw-py-12 tw-text-gray-500">
+      <p class="tw-text-lg">No memes generated yet.</p>
+      <p class="tw-mt-2">
+        <a routerLink="/" class="tw-text-green-600 hover:tw-underline">
+          Generate some memes &rarr;
+        </a>
+      </p>
+    </div>
+  } @else {
+    <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 lg:tw-grid-cols-3 tw-gap-6">
+      @for (album of albums(); track album.id) {
+        <a [routerLink]="['/my-memes', album.id]"
+           class="tw-block tw-bg-white tw-rounded-lg tw-shadow-md hover:tw-shadow-lg
+                  tw-transition-shadow tw-duration-300 tw-overflow-hidden tw-cursor-pointer
+                  tw-no-underline tw-text-inherit">
+
+          <div class="tw-grid tw-grid-cols-2 tw-gap-0.5 tw-bg-gray-100 tw-aspect-square">
+            @for (thumb of album.thumbnails; track $index) {
+              <img [src]="thumb" alt="Meme thumbnail"
+                   class="tw-w-full tw-h-full tw-object-cover" />
+            }
+            @for (placeholder of [].constructor(4 - album.thumbnails.length); track $index) {
+              <div class="tw-w-full tw-h-full tw-bg-gray-200 tw-flex tw-items-center
+                          tw-justify-center tw-text-gray-400 tw-text-2xl">
+                🎭
+              </div>
+            }
+          </div>
+
+          <div class="tw-p-4">
+            <p class="tw-text-sm tw-text-gray-600 tw-line-clamp-2 tw-mb-2">
+              {{ album.textSnippet }}
+            </p>
+            <div class="tw-flex tw-justify-between tw-items-center tw-text-xs tw-text-gray-400">
+              <span>{{ album.createdAt | date:'mediumDate' }}</span>
+              <span class="tw-bg-green-100 tw-text-green-700 tw-px-2 tw-py-0.5 tw-rounded-full">
+                {{ album.memeCount }} meme{{ album.memeCount !== 1 ? 's' : '' }}
+              </span>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  }
+</div>

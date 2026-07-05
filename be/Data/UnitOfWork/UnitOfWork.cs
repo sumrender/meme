@@ -8,6 +8,8 @@ namespace Backend.Data.UnitOfWork
         private IUserRepository? _users;
         private IMemeTemplateRepository? _memeTemplates;
         private IRefreshTokenRepository? _refreshTokens;
+        private IAlbumRepository? _albums;
+        private IMemeRepository? _memes;
 
         public UnitOfWork(AppDbContext context)
         {
@@ -22,6 +24,12 @@ namespace Backend.Data.UnitOfWork
 
         public IRefreshTokenRepository RefreshTokens =>
             _refreshTokens ??= new RefreshTokenRepository(_context);
+
+        public IAlbumRepository Albums =>
+            _albums ??= new AlbumRepository(_context);
+
+        public IMemeRepository Memes =>
+            _memes ??= new MemeRepository(_context);
 
         public async Task<int> SaveChangesAsync()
         {

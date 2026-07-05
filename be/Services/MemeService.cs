@@ -123,7 +123,7 @@ namespace Backend.Services
             return memesArray;
         }
 
-        public async Task<List<MemeResponseDto>> GenerateMemesForContent(string content)
+        public async Task<List<MemeResponseDto>> GenerateMemesForContent(string content, int userId)
         {
             var memes = await GetMemes();
             string prompt = @"
@@ -182,6 +182,28 @@ namespace Backend.Services
                     }
                 }
             }
+
+            if (memesArray.Count > 0)
+            {
+                var now = DateTime.UtcNow;
+                var album = new Album
+                {
+                    TextContent = content,
+                    UserId = userId,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    Memes = memesArray.Select(m => new Models.Meme
+                    {
+                        Caption = m.Caption,
+                        MemeTemplate = m.MemeTemplate,
+                        CreatedAt = now
+                    }).ToList()
+                };
+
+                await _unitOfWork.Albums.AddAsync(album);
+                await _unitOfWork.SaveChangesAsync();
+            }
+
             return memesArray;
         }
     }

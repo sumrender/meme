@@ -1,0 +1,42 @@
+<div class="tw-container tw-mx-auto tw-px-4 tw-py-6">
+  <div class="tw-flex tw-items-center tw-gap-3 tw-mb-6">
+    <p-button
+      [routerLink]="['/my-memes']"
+      icon="pi pi-arrow-left"
+      [text]="true"
+      severity="secondary"
+    />
+    <div>
+      <h1 class="tw-text-2xl tw-font-bold">Album</h1>
+      @let a = album();
+      @if (a) {
+        <p class="tw-text-sm tw-text-gray-500">
+          {{ a.createdAt | date:'medium' }} &middot; {{ a.memes.length }} meme{{ a.memes.length !== 1 ? 's' : '' }}
+        </p>
+      }
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="tw-flex tw-justify-center tw-py-12">
+      <p-progressSpinner />
+    </div>
+  } @else {
+    @let a = album();
+    @if (a) {
+      <div class="tw-bg-gray-50 tw-rounded-lg tw-p-4 tw-mb-6 tw-border tw-border-gray-200">
+        <p class="tw-text-xs tw-font-semibold tw-text-gray-400 tw-uppercase tw-mb-2">Source Text</p>
+        <p class="tw-text-sm tw-text-gray-700 tw-whitespace-pre-wrap">{{ a.textContent }}</p>
+      </div>
+
+      <div class="tw-grid tw-grid-cols-1 md:tw-grid-cols-2 tw-gap-6">
+        @for (meme of a.memes; track meme.caption) {
+          <div class="tw-p-4 tw-bg-white tw-rounded-lg tw-shadow-md
+                      tw-flex tw-items-center tw-justify-center">
+            <app-meme [meme]="meme"></app-meme>
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

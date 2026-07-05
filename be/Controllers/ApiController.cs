@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net.Mime;
+using System.Security.Claims;
 using Backend.Dtos;
 
 namespace Backend.Controllers
@@ -41,7 +42,8 @@ namespace Backend.Controllers
             }
             try
             {
-                var memes = await _memeService.GenerateMemesForContent(request.TextContent);
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "0");
+                var memes = await _memeService.GenerateMemesForContent(request.TextContent, userId);
                 return Ok(memes);
             }
             catch (Exception ex)

@@ -22,18 +22,19 @@
         iconPos="top"
         class="sidebar-button"
       />
-      <!-- <p-button
+      <p-button
         [style]="{ width: '70px' }"
         [link]="true"
-        [routerLink]="'saved'"
+        [routerLink]="'my-memes'"
         [routerLinkActive]="'active-route'"
+        [routerLinkActiveOptions]="{ exact: false }"
         severity="contrast"
         variant="outlined"
-        label="Saved"
-        icon="pi pi-bookmark"
+        label="My Memes"
+        icon="pi pi-images"
         iconPos="top"
         class="sidebar-button"
-      /> -->
+      />
     </div>
   </div>
   @if (user) {

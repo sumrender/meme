@@ -81,6 +81,8 @@ namespace Backend
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IMemeTemplateRepository, MemeTemplateRepository>();
             builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
+            builder.Services.AddScoped<IMemeRepository, MemeRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IUserService, UserService>();

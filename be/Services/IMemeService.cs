@@ -5,6 +5,6 @@ namespace Backend.Services
     public interface IMemeService
     {
         Task<List<MemeResponseDto>> GetRandomMemes();
-        Task<List<MemeResponseDto>> GenerateMemesForContent(string content);
+        Task<List<MemeResponseDto>> GenerateMemesForContent(string content, int userId);
     }
 }
