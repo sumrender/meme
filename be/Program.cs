@@ -124,16 +124,6 @@ namespace Backend
             app.UseSwaggerUI();
             app.Urls.Add("http://0.0.0.0:8080");
 
-            if (app.Environment.IsDevelopment())
-            {
-                Console.WriteLine("-------------- DEVELOPMENT --------------");
-            }
-            else
-            {
-                Console.WriteLine("-------------- PRODUCTION --------------");
-                app.UseHttpsRedirection();
-            }
-
             app.UseCors("CORS");
             app.UseAuthentication();
             app.UseAuthorization();

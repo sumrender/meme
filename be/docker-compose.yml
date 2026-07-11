@@ -8,6 +8,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       ConnectionStrings__DefaultConnection: "Host=postgres;Database=meme_gen_db;Port=5432;Username=postgres;Password=postgres"
 

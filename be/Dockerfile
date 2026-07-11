@@ -14,7 +14,6 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app .
-COPY ./Memes /app/Memes
 ENTRYPOINT ["dotnet", "Backend.dll"]
 
 
